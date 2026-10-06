@@ -1,0 +1,2173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GasConnect Network</title>
+
+<style>
+    * { box-sizing: border-box; }
+
+    body {
+        margin: 0;
+        font-family: Arial, Helvetica, sans-serif;
+        background: #f4f7fb;
+        color: #172033;
+    }
+
+    header {
+        background: linear-gradient(135deg, #087f5b, #0ca678);
+        color: white;
+        padding: 20px;
+    }
+
+    header h1 {
+        margin: 0 0 5px;
+    }
+
+    header p {
+        margin: 0;
+        opacity: .9;
+    }
+
+    .container {
+        max-width: 1400px;
+        margin: auto;
+        padding: 20px;
+    }
+
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .card {
+        background: white;
+        border-radius: 12px;
+        padding: 18px;
+        box-shadow: 0 3px 15px rgba(0,0,0,.06);
+    }
+
+    .stat {
+        font-size: 28px;
+        font-weight: bold;
+        margin-top: 8px;
+        color: #087f5b;
+    }
+
+    .label {
+        color: #667085;
+        font-size: 13px;
+    }
+
+    .tabs {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+    }
+
+    button {
+        border: 0;
+        border-radius: 8px;
+        padding: 11px 15px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .btn-primary {
+        background: #087f5b;
+        color: white;
+    }
+
+    .btn-secondary {
+        background: #e7f5ef;
+        color: #087f5b;
+    }
+
+    .btn-danger {
+        background: #ffe3e3;
+        color: #c92a2a;
+    }
+
+    .tab {
+        background: #e9ecef;
+        color: #343a40;
+    }
+
+    .tab.active {
+        background: #087f5b;
+        color: white;
+    }
+
+    .section {
+        display: none;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    form {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
+
+    .full {
+        grid-column: 1 / -1;
+    }
+
+    label {
+        display: block;
+        font-size: 13px;
+        font-weight: bold;
+        margin-bottom: 6px;
+    }
+
+    input, select {
+        width: 100%;
+        padding: 11px;
+        border: 1px solid #d0d5dd;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+
+    th, td {
+        padding: 11px;
+        border-bottom: 1px solid #eaecf0;
+        text-align: left;
+        font-size: 13px;
+    }
+
+    th {
+        background: #f8f9fa;
+    }
+
+    .badge {
+        padding: 4px 8px;
+        border-radius: 20px;
+        font-size: 11px;
+        font-weight: bold;
+    }
+
+    .green {
+        background: #d3f9d8;
+        color: #087f5b;
+    }
+
+    .blue {
+        background: #dbeafe;
+        color: #1d4ed8;
+    }
+
+    .orange {
+        background: #fff3bf;
+        color: #e67700;
+    }
+
+    .tree {
+        overflow-x: auto;
+        padding: 25px 5px;
+    }
+
+    .tree-node {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-width: 150px;
+    }
+
+    .node-box {
+        background: white;
+        border: 2px solid #087f5b;
+        border-radius: 12px;
+        padding: 12px;
+        text-align: center;
+        box-shadow: 0 3px 10px rgba(0,0,0,.08);
+    }
+
+    .node-code {
+        font-size: 12px;
+        color: #087f5b;
+        font-weight: bold;
+    }
+
+    .node-name {
+        font-weight: bold;
+        margin: 4px 0;
+    }
+
+    .children {
+        display: flex;
+        justify-content: center;
+        gap: 50px;
+        position: relative;
+        margin-top: 30px;
+    }
+
+    .children::before {
+        content: "";
+        position: absolute;
+        top: -15px;
+        left: 25%;
+        right: 25%;
+        height: 1px;
+        background: #b2bec3;
+    }
+
+    .empty {
+        color: #98a2b3;
+        font-size: 12px;
+        margin-top: 20px;
+    }
+
+    .wallet {
+        background: linear-gradient(135deg, #063b2e, #087f5b);
+        color: white;
+        border-radius: 15px;
+        padding: 25px;
+    }
+
+    .wallet .amount {
+        font-size: 40px;
+        font-weight: bold;
+    }
+
+    .commission-box {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .commission {
+        padding: 15px;
+        border-radius: 10px;
+        background: #f8f9fa;
+    }
+
+    .notice {
+        padding: 12px;
+        background: #fff9db;
+        border-left: 4px solid #f08c00;
+        margin: 15px 0;
+        font-size: 13px;
+    }
+
+    @media(max-width: 900px) {
+        .grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        form {
+            grid-template-columns: 1fr;
+        }
+
+        .commission-box {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    @media(max-width: 600px) {
+        .grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+    <div class="container">
+        <h1>🔥 GasConnect Network</h1>
+        <p>Gas sales, refills & binary referral management</p>
+    </div>
+</header>
+
+<div class="container">
+
+    <div class="tabs">
+        <button class="tab active" onclick="showTab('dashboard', this)">Dashboard</button>
+        <button class="tab" onclick="showTab('members', this)">Members</button>
+        <button class="tab" onclick="showTab('sales', this)">New Gas</button>
+        <button class="tab" onclick="showTab('refills', this)">Refills</button>
+        <button class="tab" onclick="showTab('tree', this)">Network Tree</button>
+        <button class="tab" onclick="showTab('transactions', this)">Transactions</button>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="section active">
+
+        <div class="grid">
+            <div class="card">
+                <div class="label">Total Members</div>
+                <div class="stat" id="totalMembers">0</div>
+            </div>
+
+            <div class="card">
+                <div class="label">New Gas Sales</div>
+                <div class="stat" id="totalGasSales">0</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Total Refills</div>
+                <div class="stat" id="totalRefills">0</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Company Revenue</div>
+                <div class="stat" id="companyRevenue">KSh 0</div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="label">Direct Commissions</div>
+                <div class="stat" id="directCommissions">KSh 0</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Binary Commissions</div>
+                <div class="stat" id="binaryCommissions">KSh 0</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Company Profit / Reserve</div>
+                <div class="stat" id="companyProfit">KSh 0</div>
+            </div>
+
+            <div class="card">
+                <div class="label">Outstanding Wallets</div>
+                <div class="stat" id="walletTotal">KSh 0</div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Commission Settings</h2>
+
+            <div class="commission-box">
+                <div class="commission">
+                    <strong>New Gas Price</strong>
+                    <h2>KSh 4,000</h2>
+                </div>
+
+                <div class="commission">
+                    <strong>New Gas Direct</strong>
+                    <h2>KSh 250</h2>
+                </div>
+
+                <div class="commission">
+                    <strong>New Gas Pair</strong>
+                    <h2>KSh 300</h2>
+                </div>
+
+                <div class="commission">
+                    <strong>Refill Price</strong>
+                    <h2>KSh 2,000</h2>
+                </div>
+
+                <div class="commission">
+                    <strong>Refill Direct</strong>
+                    <h2>KSh 100</h2>
+                </div>
+
+                <div class="commission">
+                    <strong>Refill Pair</strong>
+                    <h2>KSh 150</h2>
+                </div>
+            </div>
+
+            <div class="notice">
+                This prototype calculates commissions from actual product transactions.
+                In production, commission rules, wallets and transactions should be
+                processed on a secure server rather than trusted to browser JavaScript.
+            </div>
+        </div>
+
+    </section>
+
+    <!-- MEMBERS -->
+    <section id="members" class="section">
+
+        <div class="card">
+            <h2>Register New Member</h2>
+
+            <form onsubmit="registerMember(event)">
+
+                <div>
+                    <label>Full Name</label>
+                    <input id="memberName" required>
+                </div>
+
+                <div>
+                    <label>Phone</label>
+                    <input id="memberPhone" required>
+                </div>
+
+                <div>
+                    <label>Sponsor Code</label>
+                    <input id="sponsorCode"
+                           placeholder="Example: GASABC123">
+                </div>
+
+                <div>
+                    <label>Placement Side</label>
+                    <select id="placementSide">
+                        <option value="auto">Automatic Spillover</option>
+                        <option value="left">Left</option>
+                        <option value="right">Right</option>
+                    </select>
+                </div>
+
+                <div class="full">
+                    <button class="btn-primary">Create Member & Generate Code</button>
+                </div>
+
+            </form>
+        </div>
+
+        <div class="card">
+            <h2>Members</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Phone</th>
+                        <th>Code</th>
+                        <th>Sponsor</th>
+                        <th>Placement</th>
+                        <th>Wallet</th>
+                    </tr>
+                </thead>
+
+                <tbody id="membersTable"></tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <!-- NEW GAS -->
+    <section id="sales" class="section">
+
+        <div class="card">
+
+            <h2>New Gas Purchase</h2>
+
+            <form onsubmit="processSale(event)">
+
+                <div>
+                    <label>Customer Code</label>
+                    <input id="saleCode"
+                           placeholder="GASABC123"
+                           required>
+                </div>
+
+                <div>
+                    <label>Product</label>
+                    <input value="New Gas Cylinder + Initial Gas" disabled>
+                </div>
+
+                <div>
+                    <label>Amount</label>
+                    <input value="4000" disabled>
+                </div>
+
+                <div class="full">
+                    <button class="btn-primary">
+                        Process New Gas Purchase
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- REFILLS -->
+    <section id="refills" class="section">
+
+        <div class="card">
+
+            <h2>Process Gas Refill</h2>
+
+            <form onsubmit="processRefill(event)">
+
+                <div>
+                    <label>Customer Code</label>
+                    <input id="refillCode"
+                           placeholder="GASABC123"
+                           required>
+                </div>
+
+                <div>
+                    <label>Refill Amount</label>
+                    <input value="2000" disabled>
+                </div>
+
+                <div class="full">
+                    <button class="btn-primary">
+                        Process Refill
+                    </button>
+                </div>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- TREE -->
+    <section id="tree" class="section">
+
+        <div class="card">
+
+            <h2>Binary Network Tree</h2>
+
+            <div style="margin-bottom:15px;">
+                <label>Start from member code</label>
+                <input id="treeCode"
+                       placeholder="Leave empty for first member"
+                       oninput="renderTree()">
+            </div>
+
+            <div class="tree" id="treeContainer"></div>
+
+        </div>
+
+    </section>
+
+    <!-- TRANSACTIONS -->
+    <section id="transactions" class="section">
+
+        <div class="card">
+
+            <h2>Transaction History</h2>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th>Customer</th>
+                        <th>Amount</th>
+                        <th>Direct</th>
+                        <th>Binary</th>
+                    </tr>
+                </thead>
+
+                <tbody id="transactionsTable"></tbody>
+            </table>
+
+        </div>
+
+    </section>
+
+</div>
+
+<script>
+
+/*
+==========================================================
+ GASCONNECT NETWORK ENGINE
+==========================================================
+
+PRODUCT ECONOMICS
+
+NEW GAS
+Customer price:       KSh 4,000
+Estimated cost:       KSh 3,000
+Gross margin:         KSh 1,000
+Direct commission:    KSh 250
+Binary pool:          KSh 300
+Company/operations:   Remaining
+
+REFILL
+Customer price:       KSh 2,000
+Estimated cost:       KSh 1,500
+Gross margin:         KSh 500
+Direct commission:    KSh 100
+Binary pool:          KSh 150
+Company/operations:   Remaining
+
+BINARY
+Every qualifying transaction creates one volume point.
+
+Left + Right = one pair.
+
+NEW GAS:
+1 pair = KSh 300
+
+REFILL:
+1 pair = KSh 150
+
+Unused volume carries forward.
+
+==========================================================
+*/
+
+const CONFIG = {
+
+    newGas: {
+        price: 4000,
+        cost: 3000,
+        direct: 250,
+        binary: 300,
+        volume: 1
+    },
+
+    refill: {
+        price: 2000,
+        cost: 1500,
+        direct: 100,
+        binary: 150,
+        volume: 0.5
+    },
+
+    maxDailyBinaryPairs: 5,
+    maxMonthlyWallet: 10000
+};
+
+
+/* -------------------------------------------------------
+   DATABASE
+------------------------------------------------------- */
+
+let db = JSON.parse(
+    localStorage.getItem("gasconnectDB")
+) || {
+
+    members: [],
+
+    transactions: [],
+
+    companyRevenue: 0,
+
+    companyProfit: 0,
+
+    commissions: {
+        direct: 0,
+        binary: 0
+    }
+
+};
+
+
+/* -------------------------------------------------------
+   SAVE DATABASE
+------------------------------------------------------- */
+
+function saveDB() {
+
+    localStorage.setItem(
+        "gasconnectDB",
+        JSON.stringify(db)
+    );
+
+}
+
+
+/* -------------------------------------------------------
+   UNIQUE CODE GENERATOR
+------------------------------------------------------- */
+
+function generateUniqueCode() {
+
+    let code;
+
+    do {
+
+        const chars =
+            "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+
+        let random = "";
+
+        for(let i = 0; i < 7; i++) {
+
+            random +=
+                chars.charAt(
+                    Math.floor(
+                        Math.random() * chars.length
+                    )
+                );
+
+        }
+
+        code = "GAS" + random;
+
+    }
+
+    while(
+        db.members.some(
+            m => m.code === code
+        )
+    );
+
+    return code;
+}
+
+
+/* -------------------------------------------------------
+   UNIQUE TRANSACTION ID
+------------------------------------------------------- */
+
+function transactionID() {
+
+    return "TX-" +
+        Date.now() +
+        "-" +
+        Math.floor(
+            Math.random() * 10000
+        );
+
+}
+
+
+/* -------------------------------------------------------
+   FIND MEMBER
+------------------------------------------------------- */
+
+function findMember(code) {
+
+    if(!code) return null;
+
+    return db.members.find(
+        m =>
+            m.code.toUpperCase() ===
+            code.toUpperCase()
+    );
+
+}
+
+
+/* -------------------------------------------------------
+   REGISTER MEMBER
+------------------------------------------------------- */
+
+function registerMember(event) {
+
+    event.preventDefault();
+
+    const name =
+        document.getElementById("memberName")
+        .value.trim();
+
+    const phone =
+        document.getElementById("memberPhone")
+        .value.trim();
+
+    const sponsorCode =
+        document.getElementById("sponsorCode")
+        .value.trim()
+        .toUpperCase();
+
+    const side =
+        document.getElementById("placementSide")
+        .value;
+
+    if(sponsorCode) {
+
+        const sponsor =
+            findMember(sponsorCode);
+
+        if(!sponsor) {
+
+            alert("Sponsor code does not exist.");
+
+            return;
+
+        }
+
+    }
+
+    const member = {
+
+        id:
+            crypto.randomUUID
+            ? crypto.randomUUID()
+            : Date.now().toString(),
+
+        name,
+
+        phone,
+
+        code:
+            generateUniqueCode(),
+
+        sponsorCode:
+            sponsorCode || null,
+
+        placementParent:
+            null,
+
+        side:
+            null,
+
+        leftChild:
+            null,
+
+        rightChild:
+            null,
+
+        wallet:
+            0,
+
+        leftVolume:
+            0,
+
+        rightVolume:
+            0,
+
+        totalGas:
+            0,
+
+        totalRefills:
+            0,
+
+        createdAt:
+            new Date().toISOString()
+
+    };
+
+
+    /*
+       Determine placement.
+    */
+
+    if(sponsorCode) {
+
+        const sponsor =
+            findMember(sponsorCode);
+
+        let placement =
+            findPlacement(
+                sponsor,
+                side
+            );
+
+        if(placement) {
+
+            member.placementParent =
+                placement.parent.code;
+
+            member.side =
+                placement.side;
+
+            if(placement.side === "left") {
+
+                placement.parent.leftChild =
+                    member.code;
+
+            } else {
+
+                placement.parent.rightChild =
+                    member.code;
+
+            }
+
+        }
+
+    }
+
+
+    db.members.push(member);
+
+    saveDB();
+
+    alert(
+        "Member created successfully!\n\n" +
+        "Name: " + name +
+        "\n\nUnique Code: " +
+        member.code
+    );
+
+    event.target.reset();
+
+    refresh();
+
+}
+
+
+/* -------------------------------------------------------
+   FIND BINARY PLACEMENT
+------------------------------------------------------- */
+
+function findPlacement(
+    sponsor,
+    requestedSide
+) {
+
+    if(!sponsor) return null;
+
+
+    if(
+        requestedSide === "left" ||
+        requestedSide === "right"
+    ) {
+
+        if(
+            !getChild(
+                sponsor,
+                requestedSide
+            )
+        ) {
+
+            return {
+                parent: sponsor,
+                side: requestedSide
+            };
+
+        }
+
+        return findFirstAvailable(
+            getChild(
+                sponsor,
+                requestedSide
+            )
+        );
+
+    }
+
+
+    /*
+       Automatic spillover.
+
+       We search breadth-first for the
+       first available left/right position.
+    */
+
+    return findFirstAvailable(sponsor);
+
+}
+
+
+/* -------------------------------------------------------
+   FIND FIRST AVAILABLE POSITION
+------------------------------------------------------- */
+
+function findFirstAvailable(root) {
+
+    const queue = [root];
+
+    while(queue.length) {
+
+        const current =
+            queue.shift();
+
+        if(!current.leftChild) {
+
+            return {
+                parent: current,
+                side: "left"
+            };
+
+        }
+
+        if(!current.rightChild) {
+
+            return {
+                parent: current,
+                side: "right"
+            };
+
+        }
+
+        const left =
+            getChild(
+                current,
+                "left"
+            );
+
+        const right =
+            getChild(
+                current,
+                "right"
+            );
+
+        if(left) queue.push(left);
+
+        if(right) queue.push(right);
+
+    }
+
+    return null;
+}
+
+
+/* -------------------------------------------------------
+   GET CHILD
+------------------------------------------------------- */
+
+function getChild(member, side) {
+
+    const code =
+        side === "left"
+            ? member.leftChild
+            : member.rightChild;
+
+    if(!code) return null;
+
+    return findMember(code);
+
+}
+
+
+/* -------------------------------------------------------
+   PROCESS NEW GAS
+------------------------------------------------------- */
+
+function processSale(event) {
+
+    event.preventDefault();
+
+    const code =
+        document.getElementById("saleCode")
+        .value
+        .trim()
+        .toUpperCase();
+
+    const customer =
+        findMember(code);
+
+    if(!customer) {
+
+        alert("Customer code not found.");
+
+        return;
+
+    }
+
+
+    const sponsor =
+        findMember(
+            customer.sponsorCode
+        );
+
+
+    /*
+       DIRECT COMMISSION
+    */
+
+    let directCommission = 0;
+
+    if(sponsor) {
+
+        sponsor.wallet +=
+            CONFIG.newGas.direct;
+
+        directCommission =
+            CONFIG.newGas.direct;
+
+        db.commissions.direct +=
+            directCommission;
+
+    }
+
+
+    /*
+       BINARY VOLUME
+    */
+
+    const binaryCommission =
+        distributeBinaryVolume(
+            customer,
+            CONFIG.newGas.volume,
+            CONFIG.newGas.binary
+        );
+
+
+    customer.totalGas++;
+
+
+    /*
+       COMPANY ACCOUNTING
+    */
+
+    db.companyRevenue +=
+        CONFIG.newGas.price;
+
+    db.companyProfit +=
+        CONFIG.newGas.price -
+        CONFIG.newGas.cost -
+        directCommission -
+        binaryCommission;
+
+
+    /*
+       TRANSACTION
+    */
+
+    db.transactions.push({
+
+        id:
+            transactionID(),
+
+        date:
+            new Date().toISOString(),
+
+        type:
+            "NEW GAS",
+
+        customer:
+            customer.code,
+
+        amount:
+            CONFIG.newGas.price,
+
+        direct:
+            directCommission,
+
+        binary:
+            binaryCommission
+
+    });
+
+
+    saveDB();
+
+    alert(
+        "New gas sale processed.\n\n" +
+        "Customer: " + customer.name +
+        "\nAmount: KSh 4,000" +
+        "\nDirect commission: KSh " +
+        directCommission +
+        "\nBinary commission: KSh " +
+        binaryCommission
+    );
+
+    event.target.reset();
+
+    refresh();
+
+}
+
+
+/* -------------------------------------------------------
+   PROCESS REFILL
+------------------------------------------------------- */
+
+function processRefill(event) {
+
+    event.preventDefault();
+
+    const code =
+        document.getElementById("refillCode")
+        .value
+        .trim()
+        .toUpperCase();
+
+    const customer =
+        findMember(code);
+
+    if(!customer) {
+
+        alert("Customer code not found.");
+
+        return;
+
+    }
+
+
+    const sponsor =
+        findMember(
+            customer.sponsorCode
+        );
+
+
+    let directCommission = 0;
+
+    if(sponsor) {
+
+        sponsor.wallet +=
+            CONFIG.refill.direct;
+
+        directCommission =
+            CONFIG.refill.direct;
+
+        db.commissions.direct +=
+            directCommission;
+
+    }
+
+
+    /*
+       Binary refill volume
+    */
+
+    const binaryCommission =
+        distributeBinaryVolume(
+            customer,
+            CONFIG.refill.volume,
+            CONFIG.refill.binary
+        );
+
+
+    customer.totalRefills++;
+
+
+    db.companyRevenue +=
+        CONFIG.refill.price;
+
+    db.companyProfit +=
+        CONFIG.refill.price -
+        CONFIG.refill.cost -
+        directCommission -
+        binaryCommission;
+
+
+    db.transactions.push({
+
+        id:
+            transactionID(),
+
+        date:
+            new Date().toISOString(),
+
+        type:
+            "REFILL",
+
+        customer:
+            customer.code,
+
+        amount:
+            CONFIG.refill.price,
+
+        direct:
+            directCommission,
+
+        binary:
+            binaryCommission
+
+    });
+
+
+    saveDB();
+
+    alert(
+        "Refill processed.\n\n" +
+        "Customer: " + customer.name +
+        "\nAmount: KSh 2,000" +
+        "\nDirect commission: KSh " +
+        directCommission +
+        "\nBinary commission: KSh " +
+        binaryCommission
+    );
+
+    event.target.reset();
+
+    refresh();
+
+}
+
+
+/* -------------------------------------------------------
+   BINARY VOLUME DISTRIBUTION
+-------------------------------------------------------
+
+   A transaction generates volume.
+
+   The volume travels UP the placement tree.
+
+   Every upline receives volume on either
+   the left or right side.
+
+   When left and right volume exists,
+   the system creates a pair.
+
+------------------------------------------------------- */
+
+function distributeBinaryVolume(
+    customer,
+    volume,
+    pairValue
+) {
+
+    let current =
+        findMember(
+            customer.placementParent
+        );
+
+    let totalPaid = 0;
+
+
+    while(current) {
+
+        /*
+           Determine which side the customer
+           came from.
+        */
+
+        const childCode =
+            customer.code;
+
+        if(
+            current.leftChild ===
+            childCode
+        ) {
+
+            current.leftVolume +=
+                volume;
+
+        }
+
+        else if(
+            current.rightChild ===
+            childCode
+        ) {
+
+            current.rightVolume +=
+                volume;
+
+        }
+
+
+        /*
+           MATCH LEFT AND RIGHT
+        */
+
+        const possiblePairs =
+            Math.floor(
+                Math.min(
+                    current.leftVolume,
+                    current.rightVolume
+                )
+            );
+
+
+        /*
+           Daily payout protection.
+
+           For this browser prototype we use
+           today's already-paid binary amount.
+        */
+
+        const paidToday =
+            getTodayBinaryForMember(
+                current.code
+            );
+
+
+        const remainingPairs =
+            Math.max(
+                0,
+                CONFIG.maxDailyBinaryPairs -
+                paidToday.pairs
+            );
+
+
+        const pairsToPay =
+            Math.min(
+                possiblePairs,
+                remainingPairs
+            );
+
+
+        if(pairsToPay > 0) {
+
+            const payout =
+                pairsToPay *
+                pairValue;
+
+
+            /*
+               Remove matched volume
+            */
+
+            current.leftVolume -=
+                pairsToPay;
+
+            current.rightVolume -=
+                pairsToPay;
+
+
+            current.wallet +=
+                payout;
+
+
+            totalPaid +=
+                payout;
+
+
+            db.commissions.binary +=
+                payout;
+
+        }
+
+
+        /*
+           Continue moving upward.
+        */
+
+        customer = current;
+
+        current =
+            findMember(
+                current.placementParent
+            );
+
+    }
+
+
+    return totalPaid;
+
+}
+
+
+/* -------------------------------------------------------
+   TODAY'S BINARY COMMISSION
+------------------------------------------------------- */
+
+function getTodayBinaryForMember(code) {
+
+    const today =
+        new Date()
+        .toISOString()
+        .slice(0,10);
+
+    let amount = 0;
+
+    db.transactions.forEach(tx => {
+
+        if(
+            tx.type !== "BINARY"
+        ) return;
+
+        if(
+            tx.member !== code
+        ) return;
+
+        if(
+            tx.date.slice(0,10) !==
+            today
+        ) return;
+
+        amount += tx.amount;
+
+    });
+
+
+    /*
+       Convert today's amount into pairs.
+
+       This is simplified for the prototype.
+    */
+
+    return {
+
+        amount,
+
+        pairs:
+            Math.floor(
+                amount / 150
+            )
+
+    };
+
+}
+
+
+/* -------------------------------------------------------
+   DASHBOARD
+------------------------------------------------------- */
+
+function updateDashboard() {
+
+    document.getElementById(
+        "totalMembers"
+    ).innerText =
+        db.members.length;
+
+
+    document.getElementById(
+        "totalGasSales"
+    ).innerText =
+        db.members.reduce(
+            (sum,m) =>
+                sum + m.totalGas,
+            0
+        );
+
+
+    document.getElementById(
+        "totalRefills"
+    ).innerText =
+        db.members.reduce(
+            (sum,m) =>
+                sum + m.totalRefills,
+            0
+        );
+
+
+    document.getElementById(
+        "companyRevenue"
+    ).innerText =
+        money(
+            db.companyRevenue
+        );
+
+
+    document.getElementById(
+        "directCommissions"
+    ).innerText =
+        money(
+            db.commissions.direct
+        );
+
+
+    document.getElementById(
+        "binaryCommissions"
+    ).innerText =
+        money(
+            db.commissions.binary
+        );
+
+
+    document.getElementById(
+        "companyProfit"
+    ).innerText =
+        money(
+            db.companyProfit
+        );
+
+
+    const wallet =
+        db.members.reduce(
+            (sum,m) =>
+                sum + m.wallet,
+            0
+        );
+
+
+    document.getElementById(
+        "walletTotal"
+    ).innerText =
+        money(wallet);
+
+}
+
+
+/* -------------------------------------------------------
+   MEMBERS TABLE
+------------------------------------------------------- */
+
+function renderMembers() {
+
+    const tbody =
+        document.getElementById(
+            "membersTable"
+        );
+
+    tbody.innerHTML = "";
+
+
+    db.members.forEach(member => {
+
+        const tr =
+            document.createElement("tr");
+
+        const sponsor =
+            findMember(
+                member.sponsorCode
+            );
+
+
+        tr.innerHTML = `
+
+            <td>
+                <strong>${escapeHTML(member.name)}</strong>
+            </td>
+
+            <td>
+                ${escapeHTML(member.phone)}
+            </td>
+
+            <td>
+                <span class="badge green">
+                    ${member.code}
+                </span>
+            </td>
+
+            <td>
+                ${
+                    sponsor
+                    ? escapeHTML(sponsor.name)
+                    : "-"
+                }
+            </td>
+
+            <td>
+                ${
+                    member.side
+                    ? member.side.toUpperCase()
+                    : "-"
+                }
+            </td>
+
+            <td>
+                ${money(member.wallet)}
+            </td>
+
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+}
+
+
+/* -------------------------------------------------------
+   TRANSACTIONS
+------------------------------------------------------- */
+
+function renderTransactions() {
+
+    const tbody =
+        document.getElementById(
+            "transactionsTable"
+        );
+
+    tbody.innerHTML = "";
+
+
+    db.transactions
+        .slice()
+        .reverse()
+        .forEach(tx => {
+
+            const customer =
+                findMember(
+                    tx.customer
+                );
+
+
+            const tr =
+                document.createElement("tr");
+
+
+            tr.innerHTML = `
+
+                <td>
+                    ${new Date(tx.date)
+                        .toLocaleString()}
+                </td>
+
+                <td>
+                    <span class="badge blue">
+                        ${tx.type}
+                    </span>
+                </td>
+
+                <td>
+                    ${
+                        customer
+                        ? escapeHTML(
+                            customer.name
+                          )
+                        : tx.customer
+                    }
+                </td>
+
+                <td>
+                    ${money(tx.amount)}
+                </td>
+
+                <td>
+                    ${money(tx.direct)}
+                </td>
+
+                <td>
+                    ${money(tx.binary)}
+                </td>
+
+            `;
+
+            tbody.appendChild(tr);
+
+        });
+
+}
+
+
+/* -------------------------------------------------------
+   TREE
+------------------------------------------------------- */
+
+function renderTree() {
+
+    const container =
+        document.getElementById(
+            "treeContainer"
+        );
+
+    container.innerHTML = "";
+
+
+    let code =
+        document.getElementById(
+            "treeCode"
+        ).value
+        .trim()
+        .toUpperCase();
+
+
+    let root;
+
+
+    if(code) {
+
+        root =
+            findMember(code);
+
+        if(!root) {
+
+            container.innerHTML =
+                `<div class="empty">
+                    Member not found.
+                 </div>`;
+
+            return;
+
+        }
+
+    } else {
+
+        root =
+            db.members[0];
+
+    }
+
+
+    if(!root) {
+
+        container.innerHTML =
+            `<div class="empty">
+                No members yet.
+             </div>`;
+
+        return;
+
+    }
+
+
+    container.appendChild(
+        createTreeNode(root)
+    );
+
+}
+
+
+/* -------------------------------------------------------
+   TREE NODE
+------------------------------------------------------- */
+
+function createTreeNode(member) {
+
+    const wrapper =
+        document.createElement("div");
+
+    wrapper.className =
+        "tree-node";
+
+
+    const box =
+        document.createElement("div");
+
+    box.className =
+        "node-box";
+
+
+    box.innerHTML = `
+
+        <div class="node-code">
+            ${member.code}
+        </div>
+
+        <div class="node-name">
+            ${escapeHTML(member.name)}
+        </div>
+
+        <small>
+            Wallet: ${money(member.wallet)}
+        </small>
+
+        <br>
+
+        <small>
+            L: ${member.leftVolume}
+            |
+            R: ${member.rightVolume}
+        </small>
+
+    `;
+
+
+    wrapper.appendChild(box);
+
+
+    const left =
+        getChild(
+            member,
+            "left"
+        );
+
+    const right =
+        getChild(
+            member,
+            "right"
+        );
+
+
+    if(left || right) {
+
+        const children =
+            document.createElement("div");
+
+        children.className =
+            "children";
+
+
+        if(left) {
+
+            children.appendChild(
+                createTreeNode(left)
+            );
+
+        } else {
+
+            children.appendChild(
+                emptyNode("LEFT")
+            );
+
+        }
+
+
+        if(right) {
+
+            children.appendChild(
+                createTreeNode(right)
+            );
+
+        } else {
+
+            children.appendChild(
+                emptyNode("RIGHT")
+            );
+
+        }
+
+
+        wrapper.appendChild(children);
+
+    }
+
+
+    return wrapper;
+
+}
+
+
+/* -------------------------------------------------------
+   EMPTY TREE NODE
+------------------------------------------------------- */
+
+function emptyNode(side) {
+
+    const div =
+        document.createElement("div");
+
+    div.className =
+        "tree-node";
+
+
+    div.innerHTML = `
+
+        <div class="node-box"
+             style="border-color:#ced4da">
+
+            <div class="node-code">
+                ${side}
+            </div>
+
+            <div class="empty">
+                Available
+            </div>
+
+        </div>
+
+    `;
+
+    return div;
+
+}
+
+
+/* -------------------------------------------------------
+   TABS
+------------------------------------------------------- */
+
+function showTab(id, button) {
+
+    document
+        .querySelectorAll(".section")
+        .forEach(section => {
+
+            section.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    document
+        .querySelectorAll(".tab")
+        .forEach(tab => {
+
+            tab.classList.remove(
+                "active"
+            );
+
+        });
+
+
+    document
+        .getElementById(id)
+        .classList.add("active");
+
+
+    button.classList.add("active");
+
+
+    if(id === "tree") {
+
+        renderTree();
+
+    }
+
+}
+
+
+/* -------------------------------------------------------
+   MONEY FORMAT
+------------------------------------------------------- */
+
+function money(value) {
+
+    return "KSh " +
+        Number(value || 0)
+        .toLocaleString(
+            "en-KE",
+            {
+                maximumFractionDigits: 2
+            }
+        );
+
+}
+
+
+/* -------------------------------------------------------
+   HTML ESCAPE
+------------------------------------------------------- */
+
+function escapeHTML(value) {
+
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+
+}
+
+
+/* -------------------------------------------------------
+   REFRESH
+------------------------------------------------------- */
+
+function refresh() {
+
+    updateDashboard();
+
+    renderMembers();
+
+    renderTransactions();
+
+    renderTree();
+
+}
+
+
+/* -------------------------------------------------------
+   DEMO DATA
+-------------------------------------------------------
+
+   Click this from browser console if you want
+   sample members.
+
+   createDemoData();
+
+------------------------------------------------------- */
+
+function createDemoData() {
+
+    if(db.members.length) {
+
+        alert(
+            "Database already contains members."
+        );
+
+        return;
+
+    }
+
+
+    const john = {
+
+        id: crypto.randomUUID(),
+
+        name: "John Founder",
+
+        phone: "0700000000",
+
+        code: generateUniqueCode(),
+
+        sponsorCode: null,
+
+        placementParent: null,
+
+        side: null,
+
+        leftChild: null,
+
+        rightChild: null,
+
+        wallet: 0,
+
+        leftVolume: 0,
+
+        rightVolume: 0,
+
+        totalGas: 1,
+
+        totalRefills: 2,
+
+        createdAt:
+            new Date().toISOString()
+
+    };
+
+
+    db.members.push(john);
+
+
+    const names = [
+        "Mary",
+        "Peter",
+        "Alice",
+        "David",
+        "Jane",
+        "Brian"
+    ];
+
+
+    names.forEach(
+        (name,index) => {
+
+            const member = {
+
+                id: crypto.randomUUID(),
+
+                name,
+
+                phone:
+                    "071000000" +
+                    index,
+
+                code:
+                    generateUniqueCode(),
+
+                sponsorCode:
+                    john.code,
+
+                placementParent:
+                    john.code,
+
+                side:
+                    index % 2 === 0
+                        ? "left"
+                        : "right",
+
+                leftChild: null,
+
+                rightChild: null,
+
+                wallet: 0,
+
+                leftVolume: 0,
+
+                rightVolume: 0,
+
+                totalGas: 0,
+
+                totalRefills: 0,
+
+                createdAt:
+                    new Date().toISOString()
+
+            };
+
+
+            if(
+                index % 2 === 0 &&
+                !john.leftChild
+            ) {
+
+                john.leftChild =
+                    member.code;
+
+            }
+
+            else if(
+                !john.rightChild
+            ) {
+
+                john.rightChild =
+                    member.code;
+
+            }
+
+            db.members.push(member);
+
+        }
+    );
+
+
+    saveDB();
+
+    refresh();
+
+}
+
+
+/* -------------------------------------------------------
+   START
+------------------------------------------------------- */
+
+refresh();
+
+</script>
+
+</body>
+</html>
